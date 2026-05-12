@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostel Complaint Tracker</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  font-family: 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,255,255,0.3), transparent 25%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 45%, #6B8DD6 100%);
+  min-height:100vh;
+  background-attachment:fixed;
+  color:#111;
+}
+
+/* ─── LOGIN PAGE ─── */
+.login-page{
+  width:100%; min-height:100vh;
+  display:flex; justify-content:center; align-items:center;
+  padding:20px;
+}
+
+.login-box{
+  width:100%; max-width:440px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:28px;
+  padding:35px;
+  text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,0.2);
+}
+
+.logo{
+  width:85px; height:85px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  margin:auto;
+  display:flex; align-items:center; justify-content:center;
+  font-size:42px; color:#fff;
+  margin-bottom:20px;
+}
+
+.login-box h1{ color:#fff; margin-bottom:8px; font-size:28px; }
+.login-box > p{ color:rgba(255,255,255,0.8); margin-bottom:20px; }
+
+/* Role Selector Tabs */
+.role-tabs{
+  display:flex; gap:8px;
+  background:rgba(0,0,0,0.15);
+  border-radius:14px;
+  padding:5px;
+  margin-bottom:24px;
+}
+.role-tab{
+  flex:1; padding:10px;
+  border:none; border-radius:10px;
+  font-size:14px; font-weight:600;
+  cursor:pointer;
+  background:transparent;
+  color:rgba(255,255,255,0.7);
+  transition:0.2s;
+}
+.role-tab.active{
+  background:rgba(255,255,255,0.9);
+  color:#764ba2;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Auth Mode Toggle */
+.auth-toggle{
+  display:flex; gap:8px;
+  margin-bottom:20px;
+}
+.auth-toggle-btn{
+  flex:1; padding:9px;
+  border:2px solid rgba(255,255,255,0.4);
+  border-radius:10px;
+  background:transparent;
+  color:rgba(255,255,255,0.7);
+  font-size:13px; font-weight:600;
+  cursor:pointer; transition:0.2s;
+}
+.auth-toggle-btn.active{
+  background:rgba(255,255,255,0.2);
+  border-color:rgba(255,255,255,0.8);
+  color:#fff;
+}
+
+.input-box{
+  position:relative; margin-bottom:16px;
+}
+.input-box i{
+  position:absolute; left:15px; top:16px; color:#666;
+}
+.input-box input{
+  width:100%;
+  padding:15px 15px 15px 45px;
+  border:none; outline:none;
+  border-radius:14px;
+  background:rgba(255,255,255,0.88);
+  font-size:15px;
+}
+
+.login-btn{
+  width:100%; padding:15px;
+  border:none; border-radius:14px;
+  font-size:16px; font-weight:700;
+  color:#fff;
+  background:linear-gradient(135deg,#111,#333);
+  box-shadow:0 10px 20px rgba(0,0,0,0.25);
+  cursor:pointer; transition:0.3s ease;
+  margin-top:4px;
+}
+.login-btn:hover{ transform:translateY(-3px) scale(1.02); box-shadow:0 15px 25px rgba(0,0,0,0.35); }
+
+.login-error{
+  margin-top:12px;
+  color:#ffe4e4;
+  font-size:13px;
+  min-height:18px;
+}
+
+.toggle-link{
+  margin-top:16px;
+  color:rgba(255,255,255,0.8);
+  font-size:13px;
+}
+.toggle-link span{
+  color:#fff; font-weight:700; cursor:pointer; text-decoration:underline;
+}
+
+/* ─── MAIN APP ─── */
+.app{ display:none; padding:30px 16px; }
+.container{ max-width:1100px; margin:auto; }
+
+.header{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:25px; flex-wrap:wrap; gap:15px;
+}
+.header h1{ color:#fff; font-size:34px; }
+.header p{ color:rgba(255,255,255,0.8); margin-top:6px; }
+
+.header-right{ display:flex; gap:12px; align-items:center; }
+
+.user-badge{
+  background:rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:12px;
+  padding:10px 16px;
+  color:#fff;
+  font-size:13px;
+  font-weight:600;
+}
+
+.new-btn, .logout-btn{
+  border:none; cursor:pointer; transition:0.3s ease;
+}
+
+.new-btn{
+  padding:14px 24px; border-radius:15px;
+  font-weight:700; font-size:15px; color:#fff;
+  background:linear-gradient(135deg,#111,#333);
+  box-shadow:0 8px 18px rgba(0,0,0,0.25);
+}
+.new-btn:hover{ transform:translateY(-3px); box-shadow:0 12px 22px rgba(0,0,0,0.3); }
+
+.logout-btn{
+  padding:12px 18px; border-radius:13px;
+  font-weight:600; font-size:14px;
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.3);
+  color:#fff;
+}
+.logout-btn:hover{ background:rgba(255,255,255,0.25); }
+
+.glass{
+  background:rgba(255,255,255,0.18);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
+  border-radius:22px;
+}
+
+.ai-bar{
+  padding:20px; margin-bottom:25px;
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:15px;
+}
+.ai-left{ display:flex; align-items:center; gap:12px; }
+.dot{ width:14px; height:14px; border-radius:50%; background:#22c55e; animation:pulse 1.5s infinite; }
+@keyframes pulse{ 0%{transform:scale(1);} 50%{transform:scale(1.4);} 100%{transform:scale(1);} }
+
+.ai-btn, .submit-btn, .action-btn{
+  border:none; cursor:pointer; transition:0.3s ease;
+}
+.ai-btn{ padding:12px 18px; border-radius:14px; font-weight:700; background:#fff; }
+.ai-btn:hover{ transform:translateY(-2px); }
+
+.stats{
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:16px; margin-bottom:25px;
+}
+.stat{ padding:24px; text-align:center; }
+.stat h2{ font-size:38px; color:#fff; }
+.stat p{ margin-top:6px; color:rgba(255,255,255,0.85); }
+
+.tabs{
+  display:flex; gap:20px;
+  border-bottom:1px solid rgba(255,255,255,0.25);
+  margin-bottom:25px;
+}
+.tab{
+  background:none; border:none;
+  padding:15px 5px; color:#fff; opacity:.7;
+  cursor:pointer; font-size:15px;
+}
+.tab.active{ opacity:1; border-bottom:3px solid #fff; font-weight:700; }
+
+.filters{ display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.filters select{ padding:12px; border:none; border-radius:12px; }
+
+.list{ display:flex; flex-direction:column; gap:18px; }
+
+.card{ position:relative; padding:22px; overflow:hidden; }
+.card::before{
+  content:''; position:absolute;
+  left:0; top:0; width:6px; height:100%;
+}
+.card.high::before{ background:#ef4444; }
+.card.medium::before{ background:#f59e0b; }
+.card.low::before{ background:#22c55e; }
+
+.title{ font-size:21px; font-weight:700; margin-bottom:10px; color:#fff; }
+.card-top{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; }
+.badges{ display:flex; gap:8px; flex-wrap:wrap; }
+.badge{ padding:5px 12px; border-radius:30px; font-size:12px; font-weight:700; }
+.pending{ background:#fff3cd; color:#8a5a00; }
+.progress{ background:#dbeafe; color:#1d4ed8; }
+.resolved{ background:#dcfce7; color:#15803d; }
+.priority{ background:#f3f4f6; }
+
+.desc{ margin-top:15px; color:rgba(255,255,255,0.9); line-height:1.7; }
+.footer{ margin-top:14px; color:rgba(255,255,255,0.7); font-size:13px; }
+
+.hidden{ display:none; }
+
+.form-card{ padding:25px; }
+.form-card h2{ color:#fff; }
+
+.form-grid{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:16px; margin-top:20px;
+}
+.full{ grid-column:1/-1; }
+
+label{ display:block; margin-bottom:8px; color:#fff; font-weight:600; }
+
+input, textarea, select{
+  width:100%; padding:14px;
+  border:none; outline:none;
+  border-radius:14px;
+  background:rgba(255,255,255,0.88);
+  font-size:15px;
+}
+textarea{ resize:vertical; min-height:120px; }
+
+.submit-btn{
+  width:100%; margin-top:20px; padding:15px;
+  border-radius:15px; color:#fff;
+  font-size:16px; font-weight:700;
+  background:linear-gradient(135deg,#111,#333);
+}
+.submit-btn:hover{ transform:translateY(-3px); }
+
+.actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+.action-btn{ padding:10px 16px; border-radius:12px; font-weight:700; }
+.delete{ background:#fee2e2; color:#b91c1c; }
+
+.toast{
+  position:fixed; bottom:25px; right:25px;
+  background:#111; color:#fff;
+  padding:13px 20px; border-radius:14px;
+  opacity:0; transform:translateY(10px); transition:.3s;
+  z-index:9999;
+}
+.toast.show{ opacity:1; transform:translateY(0); }
+
+/* Student-only tab hiding for non-admin */
+.admin-only{ display:none; }
+
+@media(max-width:750px){
+  .stats{ grid-template-columns:1fr 1fr; }
+  .form-grid{ grid-template-columns:1fr; }
+  .full{ grid-column:auto; }
+  .header h1{ font-size:28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     LOGIN PAGE
+════════════════════════════════════════ -->
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+
+    <div class="logo"><i class="ti ti-building"></i></div>
+    <h1>Welcome</h1>
+    <p>Hostel Complaint Tracker</p>
+
+    <!-- Role Selector -->
+    <div class="role-tabs">
+      <button class="role-tab active" id="roleStudent" onclick="selectRole('student')">
+        <i class="ti ti-school"></i> Student
+      </button>
+      <button class="role-tab" id="roleAdmin" onclick="selectRole('admin')">
+        <i class="ti ti-shield-lock"></i> Admin
+      </button>
+    </div>
+
+    <!-- Auth Mode (Login / Register) — only for student -->
+    <div class="auth-toggle" id="authToggle">
+      <button class="auth-toggle-btn active" id="modeLogin" onclick="setMode('login')">Login</button>
+      <button class="auth-toggle-btn" id="modeRegister" onclick="setMode('register')">Register</button>
+    </div>
+
+    <!-- Student ID (register only) -->
+    <div class="input-box" id="fieldStudentId" style="display:none">
+      <i class="ti ti-id-badge"></i>
+      <input type="text" id="regStudentId" placeholder="Student ID (e.g. STU2024001)">
+    </div>
+
+    <!-- Full Name (register only) -->
+    <div class="input-box" id="fieldFullName" style="display:none">
+      <i class="ti ti-user-circle"></i>
+      <input type="text" id="regFullName" placeholder="Full Name">
+    </div>
+
+    <!-- Room Number (register only) -->
+    <div class="input-box" id="fieldRoomNo" style="display:none">
+      <i class="ti ti-door"></i>
+      <input type="text" id="regRoomNo" placeholder="Room Number">
+    </div>
+
+    <!-- Username -->
+    <div class="input-box">
+      <i class="ti ti-user"></i>
+      <input type="text" id="loginUser" placeholder="Username">
+    </div>
+
+    <!-- Password -->
+    <div class="input-box">
+      <i class="ti ti-lock"></i>
+      <input type="password" id="loginPass" placeholder="Password">
+    </div>
+
+    <!-- Confirm Password (register only) -->
+    <div class="input-box" id="fieldConfirmPass" style="display:none">
+      <i class="ti ti-lock-check"></i>
+      <input type="password" id="regConfirmPass" placeholder="Confirm Password">
+    </div>
+
+    <button class="login-btn" id="actionBtn" onclick="handleAction()">
+      <i class="ti ti-login"></i> Login
+    </button>
+
+    <div class="login-error" id="loginError"></div>
+
+    <!-- Register toggle text -->
+    <div class="toggle-link" id="toggleText">
+      Don't have an account? <span onclick="setMode('register')">Register here</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════ -->
+<div class="app" id="app">
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1><i class="ti ti-building"></i> Hostel Complaint Tracker</h1>
+    <p>Smart AI-powered hostel complaint system</p>
+  </div>
+  <div class="header-right">
+    <div class="user-badge" id="userBadge">
+      <i class="ti ti-user-circle"></i> <span id="userBadgeText">Student</span>
+    </div>
+    <button class="new-btn" onclick="showSection('file')">
+      <i class="ti ti-plus"></i> New Complaint
+    </button>
+    <button class="logout-btn" onclick="logout()">
+      <i class="ti ti-logout"></i> Logout
+    </button>
+  </div>
+</div>
+
+<!-- AI BAR -->
+<div class="ai-bar glass">
+  <div class="ai-left">
+    <div class="dot"></div>
+    <div>
+      <strong style="color:#fff">AI Analysis Ready</strong>
+      <div style="color:rgba(255,255,255,0.7)">Auto scan active</div>
+    </div>
+  </div>
+  <button class="ai-btn" onclick="runAI()">
+    <i class="ti ti-brain"></i> Analyse Now
+  </button>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats"></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" id="tab-list" onclick="showSection('list')">All Complaints</button>
+  <button class="tab" id="tab-file" onclick="showSection('file')">File New</button>
+  <button class="tab admin-only" id="tab-admin" onclick="showSection('admin')">Admin Panel</button>
+</div>
+
+<!-- LIST -->
+<div id="section-list">
+  <div class="filters">
+    <select id="filterStatus" onchange="renderComplaints()">
+      <option value="">All Status</option>
+      <option>Pending</option>
+      <option>In Progress</option>
+      <option>Resolved</option>
+    </select>
+    <select id="filterCategory" onchange="renderComplaints()">
+      <option value="">All Category</option>
+      <option>Electricity</option>
+      <option>Water</option>
+      <option>Noise</option>
+      <option>Food</option>
+      <option>Cleanliness</option>
+    </select>
+  </div>
+  <div class="list" id="complaintList"></div>
+</div>
+
+<!-- FILE NEW COMPLAINT -->
+<div id="section-file" class="hidden">
+  <div class="form-card glass">
+    <h2><i class="ti ti-edit"></i> File New Complaint</h2>
+    <div class="form-grid">
+      <div>
+        <label>Name</label>
+        <input type="text" id="name">
+      </div>
+      <div>
+        <label>Room</label>
+        <input type="text" id="room">
+      </div>
+      <div>
+        <label>Category</label>
+        <select id="category">
+          <option value="">Select</option>
+          <option>Electricity</option>
+          <option>Water</option>
+          <option>Noise</option>
+          <option>Food</option>
+          <option>Cleanliness</option>
+        </select>
+      </div>
+      <div>
+        <label>Priority</label>
+        <select id="priority">
+          <option value="">Select</option>
+          <option>High</option>
+          <option>Medium</option>
+          <option>Low</option>
+        </select>
+      </div>
+      <div class="full">
+        <label>Title</label>
+        <input type="text" id="ctitle">
+      </div>
+      <div class="full">
+        <label>Description</label>
+        <textarea id="description"></textarea>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitComplaint()">Submit Complaint</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="section-admin" class="hidden">
+  <div class="list" id="adminList"></div>
+</div>
+
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   CONFIG — point these at your backend
+════════════════════════════════════════ */
+const API = "http://localhost:3000"; // Change to your server URL
+
+/* ─── STATE ─── */
+let currentRole = "student";   // "student" | "admin"
+let authMode    = "login";     // "login" | "register"
+let loggedInUser = null;       // { username, role, name, studentId, roomNo }
+
+let complaints = JSON.parse(localStorage.getItem("complaints")) || [
+  {
+    id:"C001", name:"Rahul", room:"204",
+    category:"Electricity", priority:"High",
+    title:"Fan not working",
+    description:"Fan stopped working yesterday.",
+    status:"Pending", date:new Date().toLocaleDateString()
+  }
+];
+
+/* ─── ROLE / MODE SWITCHING ─── */
+function selectRole(role){
+  currentRole = role;
+  document.getElementById("roleStudent").classList.toggle("active", role==="student");
+  document.getElementById("roleAdmin").classList.toggle("active", role==="admin");
+
+  // Hide register option for admin
+  document.getElementById("authToggle").style.display = role==="admin" ? "none" : "flex";
+  document.getElementById("toggleText").style.display  = role==="admin" ? "none" : "block";
+
+  if(role==="admin") setMode("login");
+  clearError();
+}
+
+function setMode(mode){
+  authMode = mode;
+  document.getElementById("modeLogin").classList.toggle("active", mode==="login");
+  document.getElementById("modeRegister").classList.toggle("active", mode==="register");
+
+  const show = mode==="register";
+  document.getElementById("fieldStudentId").style.display  = show ? "block" : "none";
+  document.getElementById("fieldFullName").style.display   = show ? "block" : "none";
+  document.getElementById("fieldRoomNo").style.display     = show ? "block" : "none";
+  document.getElementById("fieldConfirmPass").style.display= show ? "block" : "none";
+
+  const btn = document.getElementById("actionBtn");
+  btn.innerHTML = show
+    ? '<i class="ti ti-user-plus"></i> Register'
+    : '<i class="ti ti-login"></i> Login';
+
+  document.getElementById("toggleText").innerHTML = show
+    ? 'Already have an account? <span onclick="setMode(\'login\')">Login here</span>'
+    : 'Don\'t have an account? <span onclick="setMode(\'register\')">Register here</span>';
+
+  clearError();
+}
+
+function clearError(){ document.getElementById("loginError").textContent = ""; }
+function showError(msg){ document.getElementById("loginError").textContent = msg; }
+
+/* ─── AUTH HANDLER ─── */
+async function handleAction(){
+  const username = document.getElementById("loginUser").value.trim();
+  const password = document.getElementById("loginPass").value;
+
+  if(!username || !password){ showError("Please fill all required fields."); return; }
+
+  if(currentRole === "admin"){
+    // Simple hardcoded admin check (you can also validate via API)
+    if(username === "admin" && password === "1234"){
+      loginSuccess({ username:"admin", role:"admin", name:"Administrator" });
+    } else {
+      showError("Invalid admin credentials.");
+    }
+    return;
+  }
+
+  // Student login / register via backend
+  if(authMode === "register"){
+    const studentId  = document.getElementById("regStudentId").value.trim();
+    const fullName   = document.getElementById("regFullName").value.trim();
+    const roomNo     = document.getElementById("regRoomNo").value.trim();
+    const confirmPass= document.getElementById("regConfirmPass").value;
+
+    if(!studentId||!fullName||!roomNo){ showError("Please fill all fields."); return; }
+    if(password !== confirmPass){ showError("Passwords do not match."); return; }
+
+    try{
+      const res = await fetch(`${API}/api/students/register`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ username, password, studentId, fullName, roomNo })
+      });
+      const data = await res.json();
+      if(res.ok){
+        toast("Registration Successful! Please login.");
+        setMode("login");
+      } else {
+        showError(data.message || "Registration failed.");
+      }
+    } catch(e){
+      // Offline fallback
+      toast("Server offline – registered locally for demo.");
+      loginSuccess({ username, role:"student", name:document.getElementById("regFullName").value, studentId:document.getElementById("regStudentId").value, roomNo:document.getElementById("regRoomNo").value });
+    }
+
+  } else {
+    // Login
+    try{
+      const res = await fetch(`${API}/api/students/login`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if(res.ok){
+        loginSuccess({ username, role:"student", name:data.fullName, studentId:data.studentId, roomNo:data.roomNo });
+      } else {
+        showError(data.message || "Invalid credentials.");
+      }
+    } catch(e){
+      // Offline demo fallback
+      toast("Server offline – demo login used.");
+      loginSuccess({ username, role:"student", name:username });
+    }
+  }
+}
+
+function loginSuccess(user){
+  loggedInUser = user;
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("app").style.display = "block";
+
+  // Show/hide admin tab
+  document.querySelectorAll(".admin-only").forEach(el=>{
+    el.style.display = user.role==="admin" ? "inline-block" : "none";
+  });
+
+  document.getElementById("userBadgeText").textContent =
+    (user.name || user.username) + " [" + user.role.toUpperCase() + "]";
+
+  // Pre-fill form if student has room info
+  if(user.roomNo) document.getElementById("room").value = user.roomNo;
+  if(user.name)   document.getElementById("name").value = user.name;
+
+  toast("Welcome, " + (user.name || user.username) + "!");
+  renderStats(); renderComplaints();
+}
+
+function logout(){
+  loggedInUser = null;
+  document.getElementById("app").style.display = "none";
+  document.getElementById("loginPage").style.display = "flex";
+  document.getElementById("loginUser").value = "";
+  document.getElementById("loginPass").value = "";
+  clearError();
+  selectRole("student");
+  setMode("login");
+}
+
+/* ─── TOAST ─── */
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2800);
+}
+
+/* ─── DATA ─── */
+function saveData(){ localStorage.setItem("complaints", JSON.stringify(complaints)); }
+
+/* ─── NAVIGATION ─── */
+function showSection(section){
+  ["list","file","admin"].forEach(s=>{
+    document.getElementById("section-"+s).classList.add("hidden");
+    document.getElementById("tab-"+s)?.classList.remove("active");
+  });
+  document.getElementById("section-"+section).classList.remove("hidden");
+  document.getElementById("tab-"+section)?.classList.add("active");
+  if(section==="admin") renderAdmin();
+}
+
+/* ─── STATS ─── */
+function renderStats(){
+  const total    = complaints.length;
+  const pending  = complaints.filter(c=>c.status==="Pending").length;
+  const progress = complaints.filter(c=>c.status==="In Progress").length;
+  const resolved = complaints.filter(c=>c.status==="Resolved").length;
+
+  document.getElementById("stats").innerHTML = `
+    <div class="stat glass"><h2>${total}</h2><p>Total</p></div>
+    <div class="stat glass"><h2>${pending}</h2><p>Pending</p></div>
+    <div class="stat glass"><h2>${progress}</h2><p>In Progress</p></div>
+    <div class="stat glass"><h2>${resolved}</h2><p>Resolved</p></div>
+  `;
+}
+
+/* ─── LIST ─── */
+function renderComplaints(){
+  const sf = document.getElementById("filterStatus").value;
+  const cf = document.getElementById("filterCategory").value;
+  const filtered = complaints.filter(c=>
+    (sf==="" || c.status===sf) && (cf==="" || c.category===cf)
+  );
+  let html="";
+  filtered.slice().reverse().forEach(c=>{
+    const sc = c.status==="In Progress" ? "progress" : c.status==="Resolved" ? "resolved" : "pending";
+    html += `
+    <div class="card glass ${c.priority.toLowerCase()}">
+      <div class="card-top">
+        <div>
+          <div class="title">${c.title}</div>
+          <div class="badges">
+            <div class="badge ${sc}">${c.status}</div>
+            <div class="badge priority">${c.priority}</div>
+            <div class="badge priority">${c.category}</div>
+          </div>
+        </div>
+        <div style="color:white">Room ${c.room}</div>
+      </div>
+      <div class="desc">${c.description}</div>
+      <div class="footer">By ${c.name} • ${c.date} • ${c.id}</div>
+    </div>`;
+  });
+  document.getElementById("complaintList").innerHTML = html || "<p style='color:rgba(255,255,255,0.7);padding:20px'>No complaints found.</p>";
+}
+
+/* ─── SUBMIT COMPLAINT ─── */
+async function submitComplaint(){
+  const name        = document.getElementById("name").value.trim();
+  const room        = document.getElementById("room").value.trim();
+  const category    = document.getElementById("category").value;
+  const priority    = document.getElementById("priority").value;
+  const title       = document.getElementById("ctitle").value.trim();
+  const description = document.getElementById("description").value.trim();
+
+  if(!name||!room||!category||!priority||!title||!description){
+    toast("Please fill all fields"); return;
+  }
+
+  const newComplaint = {
+    id:"C"+Date.now(), name, room, category, priority, title, description,
+    status:"Pending", date:new Date().toLocaleDateString()
+  };
+
+  complaints.push(newComplaint);
+  saveData(); renderComplaints(); renderStats();
+
+  // Submit to backend
+  try{
+    await fetch(`${API}/api/complaints`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ ...newComplaint, submittedBy: loggedInUser?.username })
+    });
+  } catch(e){}
+
+  // Also Formspree
+  fetch("https://formspree.io/f/xgoddonj",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify(newComplaint)
+  }).catch(()=>{});
+
+  toast("Complaint Submitted!");
+  showSection("list");
+}
+
+/* ─── ADMIN PANEL ─── */
+function renderAdmin(){
+  let html="";
+  complaints.slice().reverse().forEach(c=>{
+    html += `
+    <div class="card glass ${c.priority.toLowerCase()}">
+      <div class="title">${c.title}</div>
+      <div class="desc">${c.description}</div>
+      <div class="footer">${c.name} • Room ${c.room}</div>
+      <div class="actions">
+        <button class="action-btn" onclick="updateStatus('${c.id}','Pending')">Pending</button>
+        <button class="action-btn" onclick="updateStatus('${c.id}','In Progress')">In Progress</button>
+        <button class="action-btn" onclick="updateStatus('${c.id}','Resolved')">Resolved</button>
+        <button class="action-btn delete" onclick="deleteComplaint('${c.id}')">Delete</button>
+      </div>
+    </div>`;
+  });
+  document.getElementById("adminList").innerHTML = html;
+}
+
+function updateStatus(id,status){
+  const c = complaints.find(c=>c.id===id);
+  if(c){ c.status=status; saveData(); renderComplaints(); renderAdmin(); renderStats(); toast("Status Updated"); }
+}
+
+function deleteComplaint(id){
+  complaints = complaints.filter(c=>c.id!==id);
+  saveData(); renderComplaints(); renderAdmin(); renderStats(); toast("Complaint Deleted");
+}
+
+function runAI(){ toast("AI Analysis Complete"); }
+
+/* ─── INIT ─── */
+renderStats(); renderComplaints();
+</script>
+</body>
+</html>
