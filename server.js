@@ -2,16 +2,6 @@
  * server.js — Hostel Complaint Tracker Backend
  * ─────────────────────────────────────────────
  * Stack : Node.js + Express + MongoDB Atlas (Mongoose)
- *
- * Install dependencies:
- *   npm install express mongoose bcryptjs cors dotenv
- *
- * Create a .env file with:
- *   MONGO_URI=mongodb+srv://abhayraj0304_db_user:Abhay%40123@cluster0.8ixqhqe.mongodb.net/hostelDB?retryWrites=true&w=majority&appName=Cluster0
- *   PORT=3000
- *
- * Run:
- *   node server.js
  */
 
 require("dotenv").config();
@@ -33,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 /* ─── MIDDLEWARE ─── */
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));   // ✅ Serve static files (index.html, CSS, JS)
+app.use(express.static(__dirname));
 
 /* ─── DB CONNECTION ─── */
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/hostelDB";
@@ -44,8 +34,8 @@ mongoose.connect(MONGO_URI, {
 })
   .then(() => console.log("✅  MongoDB connected →", MONGO_URI))
   .catch(err => {
-    console.error("❌  MongoDB error:", err.message);
-    process.exit(1);
+    console.error("❌  MongoDB connection error:", err.message);
+    // ✅ FIXED: Removed process.exit(1) — was crashing Vercel
   });
 
 /* ══════════════════════════════════════════
@@ -230,8 +220,15 @@ app.delete("/api/complaints/:id", async (req, res) => {
 
 /* ─── ROOT ROUTE — Serve index.html ─── */
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));  // ✅ Frontend serve hoga
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 /* ─── START ─── */
-app.listen(PORT, () => console.log(`🚀  Server running on http://localhost:${PORT}`));
+// ✅ FIXED: Only call app.listen() in local dev, export app for Vercel
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => console.log(`🚀  Server running on http://localhost:${PORT}`));
+} else {
+  console.log(`🚀  Serverless function ready`);
+}
+
+module.exports = app; // ✅ Required for Vercel
