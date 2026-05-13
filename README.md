@@ -34,11 +34,11 @@
 
 | 🔐 Login / Register | 📊 Student Dashboard |
 |:---:|:---:|
-| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
+| ![Login](Login.png) | ![ Dashboard](Student Dashboard.png) |
 
 | 📧 Email Notification |
 |:---:|
-| ![Email](screenshots/email-notification.png) |
+| ![Email](Email.png) |
 
 </div>
 
