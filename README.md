@@ -34,7 +34,7 @@
 
 | 🔐 Login / Register | 📊 Student Dashboard |
 |:---:|:---:|
-| ![Login](Login.png) | ![ Dashboard](Student Dashboard.png) |
+| ![Login](Login.png) | ![ Dashboard](StudentDashboard.png) |
 
 | 📧 Email Notification |
 |:---:|
